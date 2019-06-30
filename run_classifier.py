@@ -296,6 +296,31 @@ class Yelp5Processor(DataProcessor):
     return examples
 
 
+class Quora(DataProcessor):
+  def get_train_examples(self, data_dir):
+    return self._create_examples(os.path.join(data_dir, "train.csv"))
+
+  def get_dev_examples(self, data_dir):
+    return self._create_examples(os.path.join(data_dir, "test.csv"))
+
+  def get_labels(self):
+    """See base class."""
+    return ["0", "1"]
+
+  def _create_examples(self, input_file):
+    """Creates examples for the training and dev sets."""
+    examples = []
+    with tf.gfile.Open(input_file) as f:
+      reader = csv.reader(f)
+      for i, line in enumerate(reader):
+
+        label = line[2]
+        text_a = line[1].replace('""', '"').replace('\\"', '"')
+        examples.append(
+            InputExample(guid=str(i), text_a=text_a, text_b=None, label=label))
+    return examples
+
+
 class ImdbProcessor(DataProcessor):
   def get_labels(self):
     return ["neg", "pos"]
@@ -544,7 +569,7 @@ def get_model_fn(n_class):
         accuracy = tf.metrics.accuracy(**eval_input_dict)
 
         loss = tf.metrics.mean(values=per_example_loss, weights=is_real_example)
-        print(confusion_matrix(label_ids, logits))
+        
         return {
             'eval_accuracy': accuracy,
             'eval_loss': loss}
@@ -652,7 +677,8 @@ def main(_):
       "mnli_mismatched": MnliMismatchedProcessor,
       'sts-b': StsbProcessor,
       'imdb': ImdbProcessor,
-      "yelp5": Yelp5Processor
+      "yelp5": Yelp5Processor,
+      "quora":Quora
   }
 
   if not FLAGS.do_train and not FLAGS.do_eval and not FLAGS.do_predict:
