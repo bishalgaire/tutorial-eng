@@ -298,28 +298,29 @@ class Yelp5Processor(DataProcessor):
 
 class Quora(DataProcessor):
   def get_train_examples(self, data_dir):
-    return self._create_examples(os.path.join(data_dir, "train.csv"))
+        """See base class."""
+        return self._create_examples(
+            self._read_tsv(os.path.join(data_dir, "train.tsv")), "train")
 
-  def get_dev_examples(self, data_dir):
-    return self._create_examples(os.path.join(data_dir, "test.csv"))
+    def get_dev_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(
+            self._read_tsv(os.path.join(data_dir, "dev.tsv")), "dev")
 
-  def get_labels(self):
-    """See base class."""
-    return ["0", "1"]
+    def get_labels(self):
+        """See base class."""
+        return ["0", "1"]
 
-  def _create_examples(self, input_file):
-    """Creates examples for the training and dev sets."""
-    examples = []
-    with tf.gfile.Open(input_file) as f:
-      reader = csv.reader(f)
-      for i, line in enumerate(reader):
-
-        label = line[2]
-        text_a = line[1].replace('""', '"').replace('\\"', '"')
-        examples.append(
-            InputExample(guid=str(i), text_a=text_a, text_b=None, label=label))
-    return examples
-
+    def _create_examples(self, lines, set_type):
+        """Creates examples for the training and dev sets."""
+        examples = []
+        for (i, line) in enumerate(lines):
+            guid = "%s-%s" % (set_type, i)
+            text_a = line[2]
+            label = line[1]
+            examples.append(
+                InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
+        return examples
 
 class ImdbProcessor(DataProcessor):
   def get_labels(self):
