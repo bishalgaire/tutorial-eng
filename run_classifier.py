@@ -309,7 +309,6 @@ class Quora(DataProcessor):
     return ["0", "1"]
 
   def _create_examples(self, lines, set_type):
-        """Creates examples for the training and dev sets."""
     examples = []
     for (i, line) in enumerate(lines):
       guid = "%s-%s" % (set_type, i)
