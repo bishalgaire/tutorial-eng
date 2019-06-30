@@ -544,7 +544,7 @@ def get_model_fn(n_class):
         accuracy = tf.metrics.accuracy(**eval_input_dict)
 
         loss = tf.metrics.mean(values=per_example_loss, weights=is_real_example)
-        tn, fp, fn, tp = confusion_matrix([label_ids, logits).ravel()
+        tn, fp, fn, tp = confusion_matrix(label_ids, logits).ravel()
 	print(tn)
 	print(tp)
         return {
