@@ -566,7 +566,9 @@ def get_model_fn(n_class):
         accuracy = tf.metrics.accuracy(**eval_input_dict)
         # F1=  tf.contrib.metrics.f1_score(labels=label_ids,predictions=logits)
         with open('logits.txt', 'w') as logits_file:
-          logits_file.write(label_ids, logits)
+          logits_file.write(logits)
+        with open('label.txt', 'w') as label_file:
+          label_file.write(label_ids)
 
         loss = tf.metrics.mean(values=per_example_loss, weights=is_real_example)
         
