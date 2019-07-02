@@ -564,21 +564,12 @@ def get_model_fn(n_class):
             'weights': is_real_example
         }
         accuracy = tf.metrics.accuracy(**eval_input_dict)
-        # F1=  tf.contrib.metrics.f1_score(labels=label_ids,predictions=logits)
-        #with open('logits.txt', 'w') as logits_file:
-         # logits_file.write(logits)
-        #with open('label.txt', 'w') as label_file:
-         # label_file.write(label_ids)
-        logits_str = tf.dtypes.cast(logits, dtype='string')
-        label_ids_str = tf.dtypes.cast(label_ids, dtype='string')
-        tf.io.write_file('logits.txt', logits_str)
-        tf.io.write_file('labels.txt', label_ids_str)
-
+        f1_score = tf.contrib.metrics.f1_score(label_ids,predictions)
         loss = tf.metrics.mean(values=per_example_loss, weights=is_real_example)
         
         return {
             'eval_accuracy': accuracy,
-            # 'f1':F1,
+            'f1_score': f1_score,
             'eval_loss': loss}
 
       def regression_metric_fn(
