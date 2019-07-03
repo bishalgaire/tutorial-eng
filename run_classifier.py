@@ -564,7 +564,7 @@ def get_model_fn(n_class):
             'weights': is_real_example
         }
         accuracy = tf.metrics.accuracy(**eval_input_dict)
-        f1_score = tf.contrib.metrics.f1_score(label_ids,predictions)
+        f1_score = tf.contrib.metrics.f1_score(**eval_input_dict)
         loss = tf.metrics.mean(values=per_example_loss, weights=is_real_example)
         
         return {
